@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* layout: one column of cards; chart and gauge side by side on wide screens */
+  /* layout: one reading column of cards with a sticky section menu; beginner wording, terms explained inline and in a glossary */
   --bg:#f2f5f3; --surface:#fcfcfb; --ink:#11211d; --ink-2:#4b5a55; --ink-3:#7d8a85;
   --line:#e2e7e4; --accent:#0f5c4c; --accent-wash:#e2efea; --on-accent:#fff;
   --up:#d03b3b; --down:#2a78d6; --warn:#8f4a06; --warn-wash:#fbf1e2; --warn-line:#ecd3ab;
@@ -17,80 +17,114 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
-button,input{font:inherit;color:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.7;-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 a{color:var(--accent)}
-.page{max-width:1120px;margin:0 auto;padding:12px 16px 32px;display:flex;flex-direction:column;gap:14px}
-.top{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.page{max-width:1080px;margin:0 auto;padding:12px 16px 32px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between}
 .brand{display:flex;gap:8px;align-items:center;color:var(--accent);font-weight:600;letter-spacing:.08em}
 .brand small{color:var(--ink-3);letter-spacing:0;font-weight:400;font-size:13px}
 .asof{font-size:13px;color:var(--ink-2)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
-h1{margin:0;font-size:22px;font-weight:600;line-height:1.35;text-wrap:balance}
-h2{margin:0 0 10px;font-size:17px;font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-h3{margin:0 0 6px;font-size:15px;font-weight:600}
-p{margin:6px 0}
-.sub{color:var(--ink-2);font-size:13px;margin:0 0 10px}
-.badge{display:inline-block;padding:1px 8px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2)}
+.menu{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 0;background:var(--bg);scrollbar-width:none}
+.menu::-webkit-scrollbar{display:none}
+.menu a{flex:none;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-size:13px;text-decoration:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+h1{margin:0;font-size:22px;font-weight:600;line-height:1.4;text-wrap:balance}
+h2{margin:0 0 8px;font-size:18px;font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center;text-wrap:balance}
+h3{margin:0 0 4px;font-size:16px;font-weight:600}
+p{margin:6px 0;max-width:68ch}
+.sub{color:var(--ink-2);font-size:14px;margin:0 0 12px}
+.badge{display:inline-block;padding:1px 8px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2)}
 .badge.warn{background:var(--warn-wash);border-color:var(--warn-line);color:var(--warn)}
-.tape{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface);min-height:46px}
-.summary ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
-.summary li{max-width:70ch}
 .num{font-family:var(--font-num);font-variant-numeric:tabular-nums}
 .dn{color:var(--down);font-weight:600}
-.up{color:var(--up);font-weight:600}
+.term{border-bottom:1px dotted var(--ink-3);cursor:help}
+.ex{color:var(--ink-3);font-size:14px}
+.tape{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface);min-height:46px}
+.lead{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.lead div{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px}
+.lead .n{width:24px;height:24px;border-radius:50%;background:var(--accent-wash);color:var(--accent);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:3px}
+
+.hours{margin-top:4px}
+.bar{display:flex;height:40px;border-radius:8px;overflow:hidden;border:1px solid var(--line);font-size:12px}
+.bar span{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;line-height:1.2}
+.bar .pre{flex:5.5;background:#eef3f1;color:var(--ink-2)}
+.bar .reg{flex:6.5;background:var(--accent);color:var(--on-accent);font-weight:600}
+.bar .aft{flex:4;background:#eef3f1;color:var(--ink-2)}
+.ticks{display:flex;font-family:var(--font-num);font-size:12px;color:var(--ink-2);margin-top:4px}
+.ticks span{flex:5.5}.ticks span:nth-child(2){flex:6.5}.ticks span:nth-child(3){flex:4}.ticks span:last-child{flex:0;white-space:nowrap}
+.now{margin:8px 0 0;font-size:14px}
+.now b{color:var(--accent)}
 
 .picker{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.picker button{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-family:var(--font-num);font-size:13px;cursor:pointer}
+.picker button{height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;cursor:pointer}
 .picker button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .picker form{display:flex;gap:6px;flex:1 1 200px;max-width:280px}
-.picker input{flex:1;min-width:0;height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-family:var(--font-num);text-transform:uppercase}
+.picker input{flex:1;min-width:0;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-family:var(--font-num);text-transform:uppercase}
 .picker input::placeholder{text-transform:none;font-family:var(--font-body)}
-.picker .go{border-radius:8px;background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-family:var(--font-body);font-weight:600}
-.err{margin:6px 0 0;font-size:13px;color:var(--warn)}
+.btn{height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.sm{height:32px;padding:0 10px;font-size:13px}
+.err{margin:6px 0 0;font-size:14px;color:var(--warn)}
 .err[hidden]{display:none}
-
 .grid{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
-@media (min-width:900px){.grid{grid-template-columns:minmax(0,1fr) 340px}}
+@media (min-width:900px){.grid{grid-template-columns:minmax(0,1fr) 330px}}
 .w{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff}
-.w-chart{height:460px}
-.w-gauge{height:430px}
-.w-news{height:520px}
-.w-cal{height:480px}
-@media (max-width:520px){.w-chart{height:380px}}
+.w-chart{height:440px}.w-gauge{height:420px}.w-news{height:520px}.w-cal{height:460px}
+@media (max-width:520px){.w-chart{height:360px}}
 .w .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;color:var(--ink-3);font-size:13px;z-index:0}
 .w .tradingview-widget-container{position:relative;z-index:1;height:100%}
-.credit{margin:6px 0 0;font-size:12px;color:var(--ink-3)}
+.howto{margin:10px 0 0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.howto li{max-width:68ch}
 
-.timeline{list-style:none;margin:0;padding:0;position:relative}
-.timeline li{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{display:grid;grid-template-columns:112px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .timeline li:first-child{border-top:0}
 .when{font-family:var(--font-num);font-size:13px;color:var(--ink-2)}
 .when b{display:block;color:var(--ink);font-weight:500}
-.what b{font-weight:600}
-.what span{display:block;font-size:13px;color:var(--ink-2)}
 .timeline li.key .when b{color:var(--accent)}
+.what b{font-weight:600}
+.what span{display:block;font-size:14px;color:var(--ink-2)}
 
 .scen{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
 @media (min-width:760px){.scen{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .sc{border:1px solid var(--line);border-radius:12px;padding:12px;border-top:4px solid var(--line)}
-.sc.a{border-top-color:var(--up)}
-.sc.b{border-top-color:var(--down)}
-.sc.c{border-top-color:var(--ink-3)}
-.sc h3{display:flex;justify-content:space-between;gap:8px}
-.sc dl{margin:6px 0 0;font-size:13px}
-.sc dt{color:var(--ink-3);font-size:12px;margin-top:6px}
-.sc dd{margin:0}
-.note{border:1px solid var(--warn-line);background:var(--warn-wash);border-radius:10px;padding:10px 12px;font-size:13px}
+.sc.a{border-top-color:var(--up)}.sc.b{border-top-color:var(--down)}.sc.c{border-top-color:var(--ink-3)}
+.sc p{font-size:14px;margin:4px 0}
+.sc .k{display:block;font-size:12px;color:var(--ink-3);margin-top:8px}
+.note{border:1px solid var(--warn-line);background:var(--warn-wash);border-radius:10px;padding:10px 12px;font-size:14px;max-width:none}
 .note b{color:var(--warn)}
-.watch ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
-.watch li{max-width:72ch}
-.inf{display:block;font-size:12px;color:var(--ink-3)}
-.src{font-size:13px}
-.src ul{margin:6px 0 0;padding-left:18px}
-.foot{font-size:12px;color:var(--ink-3)}
-.foot p{max-width:80ch}
+.watch ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.inf{display:block;font-size:13px;color:var(--ink-3)}
+
+.form{display:grid;gap:10px 12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-2);min-width:0}
+.fld input,.fld select{height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:15px;min-width:0;width:100%}
+.fld input.mono{font-family:var(--font-num);text-transform:uppercase}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.quick span{font-size:13px;color:var(--ink-2);align-self:center}
+.plans{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.plan{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:start}
+.plan.due{border-color:var(--warn-line);background:var(--warn-wash)}
+.plan .t{font-weight:600}
+.plan .t .num{font-weight:500}
+.plan .d{font-size:14px;color:var(--ink-2)}
+.plan .cd{font-family:var(--font-num);font-size:13px;color:var(--accent);font-weight:500}
+.plan.due .cd{color:var(--warn)}
+.empty{font-size:14px;color:var(--ink-2);margin:12px 0 0}
+
+.gloss{display:grid;gap:8px 18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.gloss{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gloss div{padding:8px 0;border-top:1px solid var(--line)}
+.gloss dt{font-weight:600}
+.gloss dd{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
+.src ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.foot{font-size:13px;color:var(--ink-3)}
+.credit{font-size:12px;color:var(--ink-3)}
 </style>
 </head>
 <body>
@@ -98,114 +132,170 @@ p{margin:6px 0}
   <header class="top">
     <div class="brand">
       <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="currentColor"><rect x="1" y="10" width="3.5" height="9" rx="1"/><rect x="6" y="5" width="3.5" height="14" rx="1"/><rect x="11" y="8" width="3.5" height="11" rx="1"/><rect x="16" y="2" width="3.5" height="17" rx="1"/></svg>
-      QUANT SCOPE <small>마켓 브리핑</small>
+      QUANT SCOPE <small>처음 보는 사람을 위한 미국 주식 브리핑</small>
     </div>
-    <span class="asof">뉴스 정리 기준: 2026년 11월 17일(화) 21:50 한국시간</span>
+    <span class="asof">뉴스 정리 기준: 2026년 11월 17일(화) 저녁 9시 50분</span>
   </header>
 
-  <div id="tape" class="tape" aria-label="주요 종목 시세 띠"></div>
+  <nav class="menu" aria-label="바로 가기">
+    <a href="#s-sum">한 줄 요약</a><a href="#s-hours">장 시간</a><a href="#s-chart">차트</a><a href="#s-week">이번 주 일정</a><a href="#s-scen">내일 전망</a><a href="#s-sell">예약 매도 메모</a><a href="#s-news">뉴스</a><a href="#s-gloss">용어 풀이</a>
+  </nav>
 
-  <section class="card summary" aria-labelledby="sumTitle">
-    <h1 id="sumTitle">오늘 밤 엔비디아 실적이 시장 방향을 가를 가능성이 큽니다</h1>
-    <ol>
-      <li>미국 증시는 11월 16일(월) 나스닥 <span class="dn num">−2.49%</span>, S&amp;P 500 <span class="dn num">−1.92%</span>로 3거래일 연속 하락했습니다. 엔비디아 경영 공백, 반도체 수출 규제 강화, 금리 우려가 겹쳤습니다.</li>
-      <li>엔비디아는 한국 시간 18일(수) 새벽 6시 이후 실적을 발표합니다. 옵션 시장은 발표 뒤 위아래로 약 <b class="num">7~10%</b> 움직임을 가격에 반영하고 있습니다. 방향이 아니라 크기만 반영한 값입니다.</li>
-      <li>같은 주에 FOMC 의사록, 앤트로픽 상장이 몰려 있어 이번 주는 변동성이 큰 한 주가 될 수 있습니다.</li>
-    </ol>
+  <div id="tape" class="tape" aria-label="주요 종목 가격 띠"></div>
+
+  <section id="s-sum" class="card" aria-labelledby="sumTitle">
+    <h1 id="sumTitle">오늘 밤 엔비디아 실적 발표가 시장 분위기를 크게 바꿀 수 있습니다</h1>
+    <div class="lead">
+      <div><span class="n">1</span><p><b>어제 미국 주식이 크게 내렸습니다.</b> 11월 16일(월) 기술 회사가 많은 <span class="term" title="기술 기업이 많이 모인 미국 주식시장의 대표 지수">나스닥</span>이 <span class="dn num">2.49%</span>, 미국 대표 기업 500곳을 묶은 <span class="term" title="미국 대표 기업 500곳의 주가를 합쳐 만든 지수">S&amp;P 500</span>이 <span class="dn num">1.92%</span> 내려, 3일 연속 떨어졌습니다.</p></div>
+      <div><span class="n">2</span><p><b>왜 내렸나요?</b> AI 칩을 만드는 엔비디아의 대표(젠슨 황)가 스캔들로 물러났고, 미국이 첨단 반도체 해외 판매를 더 막으려 하고, 금리가 오를 수 있다는 걱정이 겹쳤습니다.</p></div>
+      <div><span class="n">3</span><p><b>이번 주 가장 큰 일:</b> 엔비디아가 한국 시간 18일(수) 새벽 6시 이후 <span class="term" title="회사가 3개월 동안 얼마를 벌었는지 공개하는 것">실적</span>을 발표합니다. 주식 시장은 발표 뒤 엔비디아 주가가 위든 아래든 약 <b class="num">7~10%</b> 움직일 것으로 보고 있습니다. 오를지 내릴지는 아무도 모릅니다.</p></div>
+    </div>
   </section>
 
-  <section class="card" aria-labelledby="chartTitle">
-    <h2 id="chartTitle">차트 <span class="badge">TradingView 제공</span></h2>
-    <div class="picker" role="group" aria-label="종목 선택">
-      <button type="button" data-sym="AMEX:SPY">SPY</button>
-      <button type="button" data-sym="NASDAQ:QQQ">QQQ</button>
-      <button type="button" data-sym="NASDAQ:NVDA">NVDA</button>
-      <button type="button" data-sym="NASDAQ:AAPL">AAPL</button>
-      <button type="button" data-sym="NASDAQ:MSFT">MSFT</button>
-      <button type="button" data-sym="NASDAQ:GOOGL">GOOGL</button>
-      <button type="button" data-sym="NASDAQ:TSLA">TSLA</button>
+  <section id="s-hours" class="card hours" aria-labelledby="hTitle">
+    <h2 id="hTitle">미국 주식은 한국 시간으로 언제 거래되나요?</h2>
+    <p class="sub">11월부터 3월까지(미국 겨울 시간) 기준입니다. 한국 시간 밤 11시 30분에 정규 거래가 시작돼 새벽 6시에 끝납니다.</p>
+    <div class="bar" role="img" aria-label="한국 시간 기준 미국 주식 거래 시간: 오후 6시부터 밤 11시 30분까지 장 전 거래, 밤 11시 30분부터 새벽 6시까지 정규장, 새벽 6시부터 오전 10시까지 장 후 거래">
+      <span class="pre">장 전 거래</span><span class="reg">정규장</span><span class="aft">장 후 거래</span>
+    </div>
+    <div class="ticks" aria-hidden="true"><span>18:00</span><span>23:30</span><span>06:00</span><span>10:00</span></div>
+    <p id="nowLine" class="now"></p>
+    <p class="ex">장 전·장 후 거래는 거래하는 사람이 적어 가격이 크게 튀기도 합니다. 미국 휴일(예: 11월 26일 추수감사절)에는 시장이 쉽니다.</p>
+  </section>
+
+  <section id="s-chart" class="card" aria-labelledby="chartTitle">
+    <h2 id="chartTitle">차트 보기 <span class="badge">TradingView 제공</span></h2>
+    <div class="picker" role="group" aria-label="종목 고르기">
+      <button type="button" data-sym="AMEX:SPY">S&amp;P 500 (SPY)</button>
+      <button type="button" data-sym="NASDAQ:QQQ">나스닥 100 (QQQ)</button>
+      <button type="button" data-sym="NASDAQ:NVDA">엔비디아</button>
+      <button type="button" data-sym="NASDAQ:AAPL">애플</button>
+      <button type="button" data-sym="NASDAQ:MSFT">마이크로소프트</button>
+      <button type="button" data-sym="NASDAQ:TSLA">테슬라</button>
       <form id="symForm" novalidate>
-        <label for="symInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">티커</label>
-        <input id="symInput" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="다른 티커 (예: AMD)">
-        <button type="submit" class="go">보기</button>
+        <label for="symInput" class="sr">티커</label>
+        <input id="symInput" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="다른 종목 티커 (예: AMD)">
+        <button type="submit" class="btn pri sm">보기</button>
       </form>
     </div>
     <p id="symErr" class="err" role="alert" hidden></p>
     <div class="grid" style="margin-top:12px">
-      <div>
-        <div id="chart" class="w w-chart"><div class="ph">TradingView 차트를 불러오는 중입니다. 오래 비어 있으면 인터넷 연결을 확인해 주세요.</div></div>
-      </div>
-      <div>
-        <div id="gauge" class="w w-gauge"><div class="ph">기술 지표 요약을 불러오는 중입니다.</div></div>
-        <p class="credit">기술 지표 요약은 이동평균과 보조지표를 합친 TradingView의 계산입니다. 앞으로의 가격을 예측하는 값이 아닙니다.</p>
-      </div>
+      <div id="chart" class="w w-chart"><div class="ph">TradingView 차트를 불러오는 중입니다. 오래 비어 있으면 인터넷 연결을 확인해 주세요.</div></div>
+      <div id="gauge" class="w w-gauge"><div class="ph">기술 지표 요약을 불러오는 중입니다.</div></div>
     </div>
+    <ul class="howto">
+      <li><b>차트 읽는 법</b>: 막대 하나가 하루입니다. <span style="color:var(--up)">빨간 막대</span>는 그날 오른 날, <span style="color:var(--down)">파란 막대</span>는 내린 날입니다. 색은 TradingView 설정에 따라 초록·빨강으로 보일 수도 있습니다.</li>
+      <li><b>오른쪽 게이지</b>: 최근 주가 흐름을 여러 계산식으로 점검한 TradingView의 요약입니다. "매수·매도"라는 말이 나오지만 미래를 맞히는 값이 아니라 지금까지의 흐름을 요약한 것입니다.</li>
+    </ul>
   </section>
 
-  <section class="card" aria-labelledby="tlTitle">
+  <section id="s-week" class="card" aria-labelledby="tlTitle">
     <h2 id="tlTitle">이번 주 일정 <span class="badge">한국 시간</span></h2>
     <ul class="timeline">
-      <li><div class="when"><b>17일(화) 22:30</b></div><div class="what"><b>미국 10월 소매판매</b><span>소비가 강하면 금리 인상 우려가 커질 수 있습니다.</span></div></li>
-      <li><div class="when"><b>17일(화) 23:30</b></div><div class="what"><b>미국장 개장</b><span>장 전 선물은 나스닥 소폭 상승, 다우 하락으로 엇갈렸습니다.</span></div></li>
-      <li class="key"><div class="when"><b>18일(수) 06:00 이후</b></div><div class="what"><b>엔비디아 3분기 실적 발표</b><span>시장 예상: 매출 약 1,090억 달러, 주당순이익 약 2.47~2.48달러.</span></div></li>
-      <li class="key"><div class="when"><b>18일(수) 07:00</b></div><div class="what"><b>엔비디아 컨퍼런스콜</b><span>젠슨 황 사임 뒤 첫 실적 발표. 콜레트 크레스 임시 CEO가 진행합니다.</span></div></li>
-      <li><div class="when"><b>19일(목) 04:00</b></div><div class="what"><b>FOMC 10월 회의 의사록 (예정)</b><span>12월 금리 인상 가능성에 대한 단서가 나올 수 있습니다.</span></div></li>
-      <li><div class="when"><b>19일(목) 23:30 이후</b></div><div class="what"><b>앤트로픽(ANT) 나스닥 거래 시작 예정</b><span>공모가는 미국 시간 18일 확정 예정, 희망가 70~78달러.</span></div></li>
-      <li><div class="when"><b>12월 8~9일</b></div><div class="what"><b>FOMC 정례회의</b><span>금리 인상 여부가 결정됩니다.</span></div></li>
+      <li><div class="when"><b>17일(화) 22:30</b></div><div class="what"><b>미국 10월 소매판매 발표</b><span>미국 사람들이 물건을 얼마나 샀는지 보여 주는 숫자입니다. 많이 샀으면 물가·금리 걱정이 커질 수 있습니다.</span></div></li>
+      <li><div class="when"><b>17일(화) 23:30</b></div><div class="what"><b>미국 정규장 시작</b><span>장 시작 전 분위기는 나스닥은 조금 오르고 다우는 내리는 쪽으로 엇갈렸습니다.</span></div></li>
+      <li class="key"><div class="when"><b>18일(수) 06:00 이후</b></div><div class="what"><b>엔비디아 실적 발표</b><span>전문가들의 예상은 3개월 매출 약 1,090억 달러, 한 주당 이익 약 2.47~2.48달러입니다. 이보다 잘 나오면 보통 좋게, 못 나오면 나쁘게 받아들여집니다.</span></div></li>
+      <li class="key"><div class="when"><b>18일(수) 07:00</b></div><div class="what"><b>엔비디아 설명회</b><span>대표가 물러난 뒤 첫 설명회입니다. 임시 대표 콜레트 크레스가 앞으로 전망을 이야기합니다.</span></div></li>
+      <li><div class="when"><b>19일(목) 04:00</b></div><div class="what"><b>미국 중앙은행 회의록 공개 (예정)</b><span>지난 10월 회의에서 금리를 두고 무슨 이야기가 오갔는지 공개됩니다.</span></div></li>
+      <li><div class="when"><b>19일(목) 23:30 이후</b></div><div class="what"><b>앤트로픽 주식시장 상장 예정</b><span>AI 회사 앤트로픽(티커 ANT)이 처음으로 주식시장에서 거래됩니다. 처음 파는 가격(공모가)은 70~78달러 사이로 정해질 예정입니다.</span></div></li>
+      <li><div class="when"><b>12월 8~9일</b></div><div class="what"><b>미국 중앙은행 금리 결정 회의</b><span>금리를 올릴지 정합니다.</span></div></li>
     </ul>
   </section>
 
-  <section class="card" aria-labelledby="scTitle">
-    <h2 id="scTitle">다음 날 전망: 조건별 시나리오 <span class="badge warn">추론</span></h2>
-    <p class="sub">내일 주가를 맞히는 것은 불가능합니다. 아래는 확률이 아니라 "이런 결과가 나오면 이렇게 움직일 수 있다"는 조건별 정리입니다. 과거 실적 발표 때 시장이 보인 반응에 빗댄 유추입니다.</p>
+  <section id="s-scen" class="card" aria-labelledby="scTitle">
+    <h2 id="scTitle">내일은 어떻게 될까요? 경우를 나눠 봤습니다 <span class="badge warn">추측</span></h2>
+    <p class="sub">내일 주가를 정확히 맞히는 방법은 없습니다. 그래서 "실적이 이렇게 나오면 이렇게 움직일 수 있다"로 세 갈래를 정리했습니다. 과거 실적 발표 때 시장 반응에 빗댄 추측이며, 어느 쪽 가능성이 더 큰지는 근거가 없어 적지 않았습니다.</p>
     <div class="scen">
-      <div class="sc a">
-        <h3>A. 반등 <span class="badge">조건부</span></h3>
-        <dl>
-          <dt>이런 결과라면</dt><dd>매출·다음 분기 전망이 예상 이상이고, 중국 수출 영향과 경영 공백 대응을 분명히 설명할 때</dd>
-          <dt>예상 반응</dt><dd>엔비디아와 반도체주가 반등하고 나스닥도 따라 오를 수 있습니다.</dd>
-          <dt>근거</dt><dd>주가가 이번 달에만 약 24% 내려 기대치가 이미 낮아졌습니다.</dd>
-        </dl>
-      </div>
-      <div class="sc b">
-        <h3>B. 추가 하락 <span class="badge">조건부</span></h3>
-        <dl>
-          <dt>이런 결과라면</dt><dd>다음 분기 전망 하향, 마진 하락, 수출 규제 피해가 크다는 언급이 나올 때</dd>
-          <dt>예상 반응</dt><dd>AI·반도체주 매도가 이어지고 나스닥이 4거래일째 밀릴 수 있습니다.</dd>
-          <dt>근거</dt><dd>울프리서치는 150달러 지지선이 무너지면 100달러까지 열려 있다고 봤습니다(한 증권사 의견).</dd>
-        </dl>
-      </div>
-      <div class="sc c">
-        <h3>C. 엇갈림 <span class="badge">조건부</span></h3>
-        <dl>
-          <dt>이런 결과라면</dt><dd>실적은 무난하지만 후임 CEO, 규제 같은 불확실성이 그대로 남을 때</dd>
-          <dt>예상 반응</dt><dd>장중 등락이 크고, 관심이 FOMC 의사록과 앤트로픽 상장으로 옮겨 갈 수 있습니다.</dd>
-          <dt>근거</dt><dd>실적 외 변수가 이번 주에 여럿 남아 있습니다.</dd>
-        </dl>
-      </div>
+      <div class="sc a"><h3>① 다시 오르는 경우</h3>
+        <p><span class="k">이렇게 나오면</span>돈을 예상보다 많이 벌었고, 다음 3개월도 잘 벌겠다고 말할 때</p>
+        <p><span class="k">그러면</span>엔비디아와 반도체 회사 주가가 반등하고 나스닥도 따라 오를 수 있습니다.</p>
+        <p><span class="k">왜냐하면</span>이번 달에만 약 24% 떨어져 기대가 이미 낮아진 상태이기 때문입니다.</p></div>
+      <div class="sc b"><h3>② 더 내리는 경우</h3>
+        <p><span class="k">이렇게 나오면</span>다음 3개월 전망을 낮추거나, 해외 판매 규제로 손해가 크다고 말할 때</p>
+        <p><span class="k">그러면</span>AI·반도체 회사 주식을 파는 흐름이 이어질 수 있습니다.</p>
+        <p><span class="k">참고</span>한 증권사(울프리서치)는 엔비디아가 150달러 아래로 내려가면 100달러까지 갈 수 있다고 봤습니다. 한 곳의 의견일 뿐입니다.</p></div>
+      <div class="sc c"><h3>③ 오르락내리락하는 경우</h3>
+        <p><span class="k">이렇게 나오면</span>실적은 괜찮지만 새 대표, 규제 같은 걱정이 그대로 남을 때</p>
+        <p><span class="k">그러면</span>방향 없이 크게 출렁이다가, 관심이 회의록 공개와 앤트로픽 상장으로 옮겨 갈 수 있습니다.</p></div>
     </div>
-    <p class="note" style="margin-top:12px"><b>읽는 법.</b> 엔비디아 실적은 한국 시간 새벽에 나오므로, 아침에 이 페이지의 차트에서 시간외 주가를 보면 어느 시나리오 쪽인지 바로 확인할 수 있습니다.</p>
+    <p class="note" style="margin-top:12px"><b>확인하는 법.</b> 18일(수) 아침에 위 차트에서 엔비디아를 보면 됩니다. 실적이 새벽에 나오므로 아침 시간에는 장 후 거래 가격이 움직이고 있습니다.</p>
+    <div class="watch" style="margin-top:16px">
+      <h3>몇 주~몇 달 동안 지켜볼 것 <span class="badge warn">추측</span></h3>
+      <ul>
+        <li><b>금리가 오를지</b>: 10월 물가가 예상보다 높아 12월에 금리를 올리자는 이야기가 나옵니다. 금리가 오르면 "나중에 크게 벌 회사"의 가치가 낮게 계산돼 기술주에 불리한 편입니다.<span class="inf">일반 원리(금리가 오르면 미래 돈의 현재 가치가 줄어든다)에서 끌어낸 추론입니다.</span></li>
+        <li><b>반도체 해외 판매 규제</b>: 미국 의회가 AI 칩 수출 제한을 더 강하게 하려 합니다. 엔비디아의 중국 매출에 계속 부담입니다.</li>
+        <li><b>엔비디아 새 대표</b>: 누가 될지 정해질 때까지 불확실함이 이어질 수 있습니다.</li>
+        <li><b>앤트로픽 상장</b>: 규모가 매우 커서 AI 관련 주식의 돈 흐름에 영향을 줄 수도 있습니다.<span class="inf">과거 큰 상장 때 비슷한 회사에서 돈이 빠진 사례들로부터의 추측이며, 이번에도 그렇다는 근거는 없습니다. 이 페이지를 만든 Claude는 앤트로픽이 만든 AI입니다.</span></li>
+      </ul>
+    </div>
   </section>
 
-  <section class="card watch" aria-labelledby="mdTitle">
-    <h2 id="mdTitle">몇 주~몇 달 동안 볼 것 <span class="badge warn">추론</span></h2>
-    <ul>
-      <li><b>금리 인상 가능성</b>: 10월 물가가 예상보다 높게 나와 12월 회의에서 인상 논의가 나오고 있습니다. 금리가 오르면 미래 이익을 현재 가치로 바꿀 때 더 크게 깎이므로, 기대 이익 비중이 큰 기술주에 부담이 됩니다.<span class="inf">연역 추론: 금리가 오르면 할인율이 커진다는 일반 원리에서 끌어낸 결론입니다.</span></li>
-      <li><b>반도체 수출 규제</b>: 미국 의회 지도부가 AI 칩 수출 제한 강화에 힘을 싣고 있습니다. 엔비디아의 중국 매출이 계속 위험 요인으로 남습니다.</li>
-      <li><b>엔비디아 후임 CEO</b>: 이사회가 내부·외부 후보를 함께 찾고 있습니다. 결정 전까지 불확실성이 이어질 수 있습니다.</li>
-      <li><b>대형 AI 상장</b>: 앤트로픽 상장 규모가 커서 AI 관련 자금 흐름에 영향을 줄 수 있습니다.<span class="inf">귀납 추론: 과거 대형 상장 때 비슷한 종목에서 자금이 옮겨 간 사례들에서 끌어낸 가능성이며, 이번에도 그렇다는 근거는 없습니다. 이 페이지를 만든 Claude는 앤트로픽이 만든 AI입니다.</span></li>
-    </ul>
+  <section id="s-sell" class="card" aria-labelledby="sellTitle">
+    <h2 id="sellTitle">예약 매도 메모</h2>
+    <p class="sub">"며칠 저녁에 이 주식을 팔겠다"는 계획을 적어 두면 남은 시간을 세어 드립니다. 날짜와 가격은 직접 정하시고, 아래 버튼으로 이번 주 주요 시각을 바로 넣을 수 있습니다.</p>
+    <p class="note"><b>이 페이지는 실제로 주식을 팔지 않습니다.</b> 진짜 자동 매도는 쓰시는 증권사 앱에서 걸어야 합니다. 보통 "예약 주문"(장이 열리기 전에 미리 넣어 두는 주문)이나 "조건 주문·감시 주문"(가격이 정한 값에 닿으면 자동으로 나가는 주문)이라는 이름이며, 증권사마다 이름과 해외 주식 지원 여부가 달라 앱에서 확인해 주세요.</p>
+    <form id="sellForm" novalidate style="margin-top:14px">
+      <div class="form">
+        <label class="fld" for="pSym">종목 티커<input id="pSym" class="mono" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="예: NVDA"></label>
+        <label class="fld" for="pDate">날짜<input id="pDate" type="date"></label>
+        <label class="fld" for="pTime">시각 (한국 시간)<input id="pTime" type="time" value="23:30"></label>
+        <label class="fld" for="pType">언제 팔까요
+          <select id="pType">
+            <option value="time">정한 시각이 되면 팔기</option>
+            <option value="stop">이 가격 아래로 떨어지면 팔기 (손절)</option>
+            <option value="take">이 가격 위로 오르면 팔기 (익절)</option>
+          </select></label>
+        <label class="fld" for="pPrice">기준 가격 (달러)<input id="pPrice" type="number" min="0" step="0.01" placeholder="손절·익절일 때만"></label>
+        <label class="fld" for="pQty">수량 (주, 선택)<input id="pQty" type="number" min="1" step="1" placeholder="예: 3"></label>
+      </div>
+      <div class="quick" role="group" aria-label="이번 주 주요 시각 넣기">
+        <span>빠른 입력:</span>
+        <button type="button" class="btn sm" data-d="2026-11-17" data-t="23:30">오늘 밤 장 시작</button>
+        <button type="button" class="btn sm" data-d="2026-11-18" data-t="23:30">엔비디아 실적 다음 날 장 시작</button>
+        <button type="button" class="btn sm" data-d="2026-11-19" data-t="23:30">앤트로픽 상장일 장 시작</button>
+        <button type="button" class="btn sm" data-d="2026-11-21" data-t="05:30">이번 주 마지막 장 마감 30분 전</button>
+      </div>
+      <button type="submit" class="btn pri">메모 추가</button>
+      <p id="sellErr" class="err" role="alert" hidden></p>
+    </form>
+    <ul id="plans" class="plans" aria-live="polite"></ul>
+    <p class="ex" style="margin-top:10px">메모는 이 기기의 이 브라우저에만 저장됩니다. 페이지가 열려 있을 때만 시간을 셉니다.</p>
   </section>
 
-  <section class="card" aria-labelledby="newsTitle">
+  <section id="s-news" class="card" aria-labelledby="newsTitle">
     <h2 id="newsTitle">실시간 뉴스 <span class="badge">TradingView 제공</span></h2>
-    <p class="sub">선택한 종목의 최신 뉴스가 자동으로 표시됩니다. 위의 요약과 시나리오는 21:50 기준으로 정리한 것이라, 그 뒤 소식은 여기서 확인해 주세요.</p>
+    <p class="sub">차트에서 고른 종목의 최신 뉴스가 자동으로 나옵니다. 위 요약은 17일 저녁 9시 50분 기준이니, 그 뒤 소식은 여기서 확인해 주세요. 뉴스는 대부분 영어입니다.</p>
     <div id="news" class="w w-news"><div class="ph">뉴스를 불러오는 중입니다.</div></div>
+    <h3 style="margin-top:16px">미국 경제 지표 발표 일정</h3>
+    <div id="cal" class="w w-cal"><div class="ph">경제 일정을 불러오는 중입니다.</div></div>
   </section>
 
-  <section class="card" aria-labelledby="calTitle">
-    <h2 id="calTitle">미국 경제 지표 일정 <span class="badge">TradingView 제공</span></h2>
-    <div id="cal" class="w w-cal"><div class="ph">경제 일정을 불러오는 중입니다.</div></div>
+  <section id="s-gloss" class="card" aria-labelledby="glTitle">
+    <h2 id="glTitle">용어 풀이</h2>
+    <dl class="gloss">
+      <div><dt>주식</dt><dd>회사의 작은 조각입니다. 주식을 사면 그 회사의 아주 작은 주인이 되고, 회사 가치가 오르면 주식 값도 오릅니다.</dd></div>
+      <div><dt>티커</dt><dd>주식의 영어 줄임 이름입니다. 엔비디아는 NVDA, 애플은 AAPL입니다.</dd></div>
+      <div><dt>매수 · 매도</dt><dd>매수는 사는 것, 매도는 파는 것입니다.</dd></div>
+      <div><dt>지수 (S&amp;P 500, 나스닥, 다우)</dt><dd>여러 회사 주가를 묶어 시장 전체 분위기를 숫자 하나로 보여 주는 것입니다. S&amp;P 500은 대표 기업 500곳, 나스닥은 기술 기업 중심, 다우는 큰 회사 30곳입니다.</dd></div>
+      <div><dt>ETF</dt><dd>지수를 그대로 따라가도록 만든 상품으로, 주식처럼 사고팔 수 있습니다. SPY는 S&amp;P 500, QQQ는 나스닥 100을 따라갑니다.</dd></div>
+      <div><dt>정규장 · 장 전 · 장 후 거래</dt><dd>정규장은 본래 거래 시간(한국 밤 11시 30분~새벽 6시)이고, 그 앞뒤에 추가로 거래할 수 있는 시간이 장 전·장 후 거래입니다.</dd></div>
+      <div><dt>실적 발표</dt><dd>회사가 지난 3개월 동안 얼마나 팔고 얼마나 남겼는지 공개하는 것입니다. 주가가 크게 움직이는 날입니다.</dd></div>
+      <div><dt>매출 · 이익</dt><dd>매출은 판 돈 전체, 이익은 비용을 빼고 남은 돈입니다.</dd></div>
+      <div><dt>주당순이익 (EPS)</dt><dd>회사가 남긴 이익을 주식 수로 나눈 값입니다. 주식 한 주가 번 돈이라고 보면 됩니다.</dd></div>
+      <div><dt>가이던스 (실적 전망)</dt><dd>회사가 "다음 3개월은 이 정도 벌 것 같다"고 스스로 밝히는 예상치입니다. 지난 실적보다 더 중요하게 보는 경우가 많습니다.</dd></div>
+      <div><dt>옵션 · 예상 변동폭</dt><dd>옵션은 정해진 가격에 사거나 팔 권리를 거래하는 상품입니다. 옵션 가격을 보면 시장이 주가가 얼마나 크게 움직일 거라 보는지 알 수 있고, 이를 예상 변동폭이라고 합니다. 방향은 알려 주지 않습니다.</dd></div>
+      <div><dt>선물</dt><dd>미래에 정한 가격으로 사고팔기로 약속하는 상품입니다. 장이 열리기 전 선물 가격으로 그날 분위기를 미리 짐작합니다.</dd></div>
+      <div><dt>지지선</dt><dd>과거에 주가가 그 근처에서 자주 멈추고 다시 올랐던 가격대입니다. 이 아래로 떨어지면 더 내려갈 수 있다고 보는 사람이 많습니다.</dd></div>
+      <div><dt>금리 · 미국 중앙은행 (연준, FOMC)</dt><dd>금리는 돈을 빌릴 때 내는 이자율입니다. 미국 중앙은행이 금리를 정하고, 금리를 정하는 회의를 FOMC라고 부릅니다. 회의록은 그 회의 내용을 나중에 공개한 기록입니다.</dd></div>
+      <div><dt>수출 규제</dt><dd>나라가 특정 물건을 다른 나라에 팔지 못하게 막는 것입니다. 미국은 첨단 AI 칩의 중국 판매를 막고 있습니다.</dd></div>
+      <div><dt>상장 (IPO) · 공모가</dt><dd>회사가 처음으로 주식시장에 주식을 내놓는 것을 상장이라고 하고, 그때 처음 파는 가격을 공모가라고 합니다.</dd></div>
+      <div><dt>반도체</dt><dd>컴퓨터와 휴대폰의 두뇌 역할을 하는 칩입니다. 엔비디아는 AI 계산에 쓰는 칩을 만듭니다.</dd></div>
+      <div><dt>변동성</dt><dd>주가가 얼마나 크게 오르내리는지를 말합니다. 변동성이 크면 수익도 손실도 커질 수 있습니다.</dd></div>
+      <div><dt>시장가 · 지정가 주문</dt><dd>시장가는 지금 거래되는 가격에 바로 사고파는 주문, 지정가는 "이 가격일 때만" 사고팔겠다는 주문입니다.</dd></div>
+      <div><dt>손절 · 익절</dt><dd>손절은 손해가 더 커지기 전에 정한 가격에서 파는 것, 익절은 이익이 났을 때 정한 가격에서 파는 것입니다.</dd></div>
+      <div><dt>예약 주문 · 조건 주문</dt><dd>예약 주문은 장이 열리기 전에 미리 넣어 두는 주문, 조건 주문은 가격이 정한 값에 닿으면 자동으로 나가는 주문입니다. 이름은 증권사마다 다릅니다.</dd></div>
+      <div><dt>이동평균</dt><dd>최근 며칠 동안 주가의 평균을 이은 선입니다. 주가가 이 선 위에 있으면 오르는 흐름, 아래면 내리는 흐름으로 많이 봅니다.</dd></div>
+    </dl>
   </section>
 
   <section class="card src" aria-labelledby="srcTitle">
@@ -215,18 +305,18 @@ p{margin:6px 0}
       <li><a href="https://edition.cnn.com/2026/11/16/business/stocks-nvidia-ai-anthropic">CNN: Stocks slide to kick off major week for Wall Street</a></li>
       <li><a href="https://www.bloomberg.com/news/articles/2026-11-16/stock-market-today-dow-s-p-live-updates">Bloomberg: Stock Selloff Loses Steam Ahead of Nvidia Test</a></li>
       <li><a href="https://finance.yahoo.com/markets/live/stock-market-today-tuesday-november-17-dow-sp-500-nasdaq-nvidia-earnings-091546152.html">Yahoo Finance: 11월 17일 선물 동향</a></li>
-      <li><a href="https://www.benzinga.com/node/63277064">Benzinga: 엔비디아 실적 예상치와 옵션 반영 변동폭</a></li>
-      <li><a href="https://stockwirex.com/?p=56231">StockWireX: 엔비디아 옵션 반영 변동폭 7~10%</a></li>
-      <li><a href="https://nvidianews.nvidia.com/_gallery/download_pdf/6ae2629e3d6332e4d401652e/">NVIDIA: 3분기 실적 컨퍼런스콜 공지</a></li>
+      <li><a href="https://www.benzinga.com/node/63277064">Benzinga: 엔비디아 실적 예상치와 예상 변동폭</a></li>
+      <li><a href="https://stockwirex.com/?p=56231">StockWireX: 엔비디아 예상 변동폭 7~10%</a></li>
+      <li><a href="https://nvidianews.nvidia.com/_gallery/download_pdf/6ae2629e3d6332e4d401652e/">NVIDIA: 3분기 실적 설명회 공지</a></li>
       <li><a href="https://www.latintimes.com/jensen-huang-resigns-china-chip-export-controls-601367">Latin Times: 젠슨 황 사임과 수출 규제</a></li>
-      <li><a href="https://www.newsquawk.com/headlines/anthropic-ant-expects-ipo-price-of-usd-70-78shr-to-sell-80135mln-ipo-shares-with-the-co-seeking-to-raise-usd-644bln-to-price-on-november-18th-and-trade-on-november-19th">Newsquawk: 앤트로픽 공모 일정</a></li>
+      <li><a href="https://www.newsquawk.com/headlines/anthropic-ant-expects-ipo-price-of-usd-70-78shr-to-sell-80135mln-ipo-shares-with-the-co-seeking-to-raise-usd-644bln-to-price-on-november-18th-and-trade-on-november-19th">Newsquawk: 앤트로픽 상장 일정</a></li>
       <li><a href="https://stockhub.kr/en/insights/macro-weekly-20261116">StockHub: 11월 16~20일 경제 일정</a></li>
-      <li><a href="https://news.ifyouspent.com/en/news/week-ahead-november-9-2026-cpi-earnings-congress">IfYouSpent: 12월 FOMC 일정과 금리 인상 기대</a></li>
+      <li><a href="https://news.ifyouspent.com/en/news/week-ahead-november-9-2026-cpi-earnings-congress">IfYouSpent: 12월 금리 회의와 금리 인상 기대</a></li>
     </ul>
   </section>
 
   <footer class="foot">
-    <p>차트, 시세 띠, 기술 지표 요약, 뉴스, 경제 일정은 TradingView 무료 위젯으로 표시하며, 거래소에 따라 시세가 지연될 수 있습니다. 요약과 시나리오는 위 출처를 바탕으로 정리한 조사용 내용이며 수익을 보장하지 않고, 개인 상황에 맞춘 투자 조언이 아닙니다.</p>
+    <p>차트, 가격 띠, 기술 지표 요약, 뉴스, 경제 일정은 TradingView 무료 위젯으로 보여 주며 가격이 조금 늦게 표시될 수 있습니다. 요약과 전망은 위 출처를 바탕으로 정리한 참고용 내용이며, 수익을 보장하지 않고 개인 상황에 맞춘 투자 조언이 아닙니다. 투자 결정과 그 결과는 본인의 책임입니다.</p>
     <p class="credit"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a></p>
   </footer>
 </div>
@@ -235,54 +325,137 @@ p{margin:6px 0}
 (function(){
 'use strict';
 var BASE='https://s3.tradingview.com/external-embedding/';
+var TICK=/^([A-Z]{2,10}:)?[A-Z][A-Z0-9.\-]{0,9}$/;
+function $(id){return document.getElementById(id);}
+function sget(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function sset(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function pad(n){return n<10?'0'+n:''+n;}
+
+/* ---------- TradingView 위젯 ---------- */
 function mount(id,file,cfg){
-  var box=document.getElementById(id);
-  if(!box)return;
+  var box=$(id);if(!box)return;
   var ph=box.querySelector('.ph');
   Array.prototype.slice.call(box.children).forEach(function(n){if(n!==ph)box.removeChild(n);});
   var c=document.createElement('div');c.className='tradingview-widget-container';
-  var w=document.createElement('div');w.className='tradingview-widget-container__widget';w.style.height='100%';
-  c.appendChild(w);
+  var w=document.createElement('div');w.className='tradingview-widget-container__widget';w.style.height='100%';c.appendChild(w);
   var s=document.createElement('script');s.type='text/javascript';s.src=BASE+file;s.async=true;s.innerHTML=JSON.stringify(cfg);
   c.appendChild(s);box.appendChild(c);
 }
-function tape(){
-  var box=document.getElementById('tape');
-  var c=document.createElement('div');c.className='tradingview-widget-container';
+(function tape(){
+  var box=$('tape'),c=document.createElement('div');c.className='tradingview-widget-container';
   var w=document.createElement('div');w.className='tradingview-widget-container__widget';c.appendChild(w);
   var s=document.createElement('script');s.type='text/javascript';s.src=BASE+'embed-widget-ticker-tape.js';s.async=true;
   s.innerHTML=JSON.stringify({symbols:[
     {proName:'AMEX:SPY',title:'S&P 500 ETF'},{proName:'NASDAQ:QQQ',title:'나스닥 100 ETF'},{proName:'AMEX:DIA',title:'다우 ETF'},
     {proName:'NASDAQ:NVDA',title:'엔비디아'},{proName:'NASDAQ:AAPL',title:'애플'},{proName:'NASDAQ:MSFT',title:'마이크로소프트'},
-    {proName:'NASDAQ:GOOGL',title:'알파벳'},{proName:'NASDAQ:AMZN',title:'아마존'},{proName:'NASDAQ:META',title:'메타'},{proName:'NASDAQ:TSLA',title:'테슬라'}
+    {proName:'NASDAQ:GOOGL',title:'알파벳(구글)'},{proName:'NASDAQ:AMZN',title:'아마존'},{proName:'NASDAQ:META',title:'메타'},{proName:'NASDAQ:TSLA',title:'테슬라'}
   ],showSymbolLogo:true,isTransparent:false,displayMode:'adaptive',colorTheme:'light',locale:'kr'});
   c.appendChild(s);box.appendChild(c);
-}
-var current=null;
+})();
 function show(sym){
-  current=sym;
-  try{localStorage.setItem('qs.tv.sym',sym);}catch(e){}
+  sset('qs.tv.sym',sym);
   Array.prototype.forEach.call(document.querySelectorAll('.picker button[data-sym]'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-sym')===sym?'true':'false');});
   mount('chart','embed-widget-advanced-chart.js',{autosize:true,symbol:sym,interval:'D',timezone:'Asia/Seoul',theme:'light',style:'1',locale:'kr',allow_symbol_change:true,calendar:false,support_host:'https://www.tradingview.com'});
   mount('gauge','embed-widget-technical-analysis.js',{interval:'1D',width:'100%',height:'100%',isTransparent:false,symbol:sym,showIntervalTabs:true,displayMode:'single',locale:'kr',colorTheme:'light'});
   mount('news','embed-widget-timeline.js',{feedMode:'symbol',symbol:sym,isTransparent:false,displayMode:'regular',width:'100%',height:'100%',colorTheme:'light',locale:'kr'});
 }
 document.querySelector('.picker').addEventListener('click',function(e){
-  var b=e.target.closest('button[data-sym]');if(!b)return;
-  document.getElementById('symErr').hidden=true;show(b.getAttribute('data-sym'));
+  var b=e.target.closest('button[data-sym]');if(!b)return;$('symErr').hidden=true;show(b.getAttribute('data-sym'));
 });
-document.getElementById('symForm').addEventListener('submit',function(e){
+$('symForm').addEventListener('submit',function(e){
   e.preventDefault();
-  var inp=document.getElementById('symInput'),err=document.getElementById('symErr'),v=String(inp.value||'').trim().toUpperCase();
+  var inp=$('symInput'),err=$('symErr'),v=String(inp.value||'').trim().toUpperCase();
   if(!v){err.textContent='티커를 먼저 입력해 주세요. 예: AMD';err.hidden=false;inp.focus();return;}
-  if(!/^([A-Z]{2,10}:)?[A-Z][A-Z0-9.\-]{0,9}$/.test(v)){err.textContent='티커는 영문과 숫자로 입력해 주세요. 예: AMD, BRK.B';err.hidden=false;inp.focus();return;}
+  if(!TICK.test(v)){err.textContent='티커는 영문과 숫자로 입력해 주세요. 예: AMD, BRK.B';err.hidden=false;inp.focus();return;}
   err.hidden=true;inp.value='';show(v);
 });
-document.getElementById('symInput').addEventListener('input',function(){document.getElementById('symErr').hidden=true;});
-tape();
-var saved=null;try{saved=localStorage.getItem('qs.tv.sym');}catch(e){}
-show(saved&&/^([A-Z]{2,10}:)?[A-Z][A-Z0-9.\-]{0,9}$/.test(saved)?saved:'NASDAQ:NVDA');
+$('symInput').addEventListener('input',function(){$('symErr').hidden=true;});
+var saved=sget('qs.tv.sym',null);
+show(typeof saved==='string'&&TICK.test(saved)?saved:'NASDAQ:NVDA');
 mount('cal','embed-widget-events.js',{colorTheme:'light',isTransparent:false,width:'100%',height:'100%',locale:'kr',importanceFilter:'0,1',countryFilter:'us'});
+
+/* ---------- 지금 미국 장 상태 (미국 동부 시간 기준, 휴일 미반영) ---------- */
+function etNow(){
+  var f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false});
+  var o={};f.formatToParts(new Date()).forEach(function(p){o[p.type]=p.value;});
+  var h=+o.hour;if(h===24)h=0;
+  return {dow:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday),t:h*60+(+o.minute)};
+}
+function renderNow(){
+  var e=etNow(),label;
+  if(e.dow===0||e.dow===6)label='주말이라 미국 시장이 쉬는 중입니다';
+  else if(e.t<240)label='미국 시장이 닫혀 있습니다';
+  else if(e.t<570)label='장 전 거래 시간입니다';
+  else if(e.t<960)label='정규장이 열려 있습니다';
+  else if(e.t<1200)label='장 후 거래 시간입니다';
+  else label='미국 시장이 닫혀 있습니다';
+  var line=$('nowLine');line.textContent='';
+  line.appendChild(document.createTextNode('지금은 '));
+  var b=document.createElement('b');b.textContent=label;line.appendChild(b);
+  line.appendChild(document.createTextNode('. (미국 휴일은 반영하지 않습니다)'));
+}
+
+/* ---------- 예약 매도 메모 ---------- */
+var TYPES={time:'정한 시각이 되면 팔기',stop:'아래로 떨어지면 팔기 (손절)',take:'위로 오르면 팔기 (익절)'};
+var plans=(sget('qs.sellplans',[])||[]).filter(function(p){return p&&typeof p.sym==='string'&&TYPES[p.type]&&isFinite(p.at);}).slice(0,50);
+function fmtAt(ms){var d=new Date(ms);return (d.getMonth()+1)+'월 '+d.getDate()+'일 ('+['일','월','화','수','목','금','토'][d.getDay()]+') '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function left(ms){
+  var s=Math.floor((ms-Date.now())/1000);
+  if(s<=0)return null;
+  var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);
+  return (d?d+'일 ':'')+(d||h?h+'시간 ':'')+m+'분 남음';
+}
+function renderPlans(){
+  var ul=$('plans');while(ul.firstChild)ul.removeChild(ul.firstChild);
+  if(!plans.length){var p=document.createElement('li');p.className='empty';p.textContent='아직 적어 둔 계획이 없습니다.';ul.appendChild(p);return;}
+  plans.slice().sort(function(a,b){return a.at-b.at;}).forEach(function(p){
+    var li=document.createElement('li'),rem=left(p.at);li.className='plan'+(rem?'':' due');
+    var body=document.createElement('div');
+    var t=document.createElement('div');t.className='t';
+    var sym=document.createElement('span');sym.className='num';sym.textContent=p.sym;
+    t.appendChild(sym);t.appendChild(document.createTextNode(' '+(p.qty?p.qty+'주 ':'')+'매도'));
+    var d=document.createElement('div');d.className='d';
+    d.textContent=fmtAt(p.at)+' · '+TYPES[p.type]+(p.price!=null?' · 기준 '+p.price.toFixed(2)+'달러':'');
+    var cd=document.createElement('div');cd.className='cd';
+    cd.textContent=rem?rem:'시간이 됐습니다. 증권사 앱에서 주문을 확인하세요.';
+    body.appendChild(t);body.appendChild(d);body.appendChild(cd);
+    var del=document.createElement('button');del.type='button';del.className='btn sm';del.textContent='지우기';
+    del.setAttribute('aria-label',p.sym+' '+fmtAt(p.at)+' 계획 지우기');
+    del.addEventListener('click',function(){plans=plans.filter(function(x){return x.id!==p.id;});sset('qs.sellplans',plans);renderPlans();});
+    li.appendChild(body);li.appendChild(del);ul.appendChild(li);
+  });
+}
+function syncPrice(){var need=$('pType').value!=='time';$('pPrice').disabled=!need;if(!need)$('pPrice').value='';}
+$('pType').addEventListener('change',function(){syncPrice();$('sellErr').hidden=true;});
+Array.prototype.forEach.call(document.querySelectorAll('.quick button'),function(b){
+  b.addEventListener('click',function(){$('pDate').value=b.getAttribute('data-d');$('pTime').value=b.getAttribute('data-t');$('sellErr').hidden=true;});
+});
+['pSym','pDate','pTime','pPrice','pQty'].forEach(function(id){$(id).addEventListener('input',function(){$('sellErr').hidden=true;});});
+$('sellForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var err=$('sellErr');
+  function fail(msg,id){err.textContent=msg;err.hidden=false;if(id)$(id).focus();}
+  var sym=String($('pSym').value||'').trim().toUpperCase(),date=$('pDate').value,time=$('pTime').value,type=$('pType').value;
+  if(!sym)return fail('종목 티커를 입력해 주세요. 예: NVDA','pSym');
+  if(!/^[A-Z][A-Z0-9.\-]{0,9}$/.test(sym))return fail('티커는 영문과 숫자로 입력해 주세요. 예: NVDA','pSym');
+  if(!date)return fail('날짜를 골라 주세요. 빠른 입력 버튼을 써도 됩니다.','pDate');
+  if(!time)return fail('시각을 입력해 주세요.','pTime');
+  var at=new Date(date+'T'+time).getTime();
+  if(!isFinite(at))return fail('날짜나 시각 형식이 올바르지 않습니다.','pDate');
+  if(at<=Date.now())return fail('이미 지난 시각입니다. 앞으로의 시각을 골라 주세요.','pDate');
+  var price=null;
+  if(type!=='time'){price=parseFloat($('pPrice').value);if(!isFinite(price)||price<=0)return fail('손절·익절은 기준 가격을 0보다 큰 숫자로 입력해 주세요.','pPrice');}
+  var qv=$('pQty').value,qty=null;
+  if(qv!==''){qty=+qv;if(!isFinite(qty)||qty<1||Math.floor(qty)!==qty)return fail('수량은 1 이상의 정수로 입력해 주세요.','pQty');}
+  if(plans.length>=50)return fail('계획은 50개까지 적을 수 있습니다. 지난 계획을 지워 주세요.');
+  err.hidden=true;
+  plans.push({id:Date.now()+'-'+Math.random().toString(36).slice(2,7),sym:sym,at:at,type:type,price:price,qty:qty});
+  sset('qs.sellplans',plans);
+  $('pSym').value='';$('pPrice').value='';$('pQty').value='';
+  renderPlans();
+});
+syncPrice();renderNow();renderPlans();
+setInterval(function(){renderNow();renderPlans();},30000);
 })();
 </script>
 </body>
